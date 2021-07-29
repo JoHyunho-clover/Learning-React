@@ -20,9 +20,9 @@ class TOC extends Component{
         }
         return (
         <nav>
-        <ul>
-            {lists}
-        </ul>
+            <ul>
+                {lists}
+            </ul>
         </nav>
         )
     }
