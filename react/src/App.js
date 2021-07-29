@@ -5,14 +5,14 @@ import Subject from './components/Subject'
 import Control from './components/Control'
 import React,{Component} from 'react';
 import CreateContent from './components/CreateContent';
-import UpdateContent from './components/UpdataContent';
+import UpdateContent from './components/UpdateContent';
 
 class App extends Component {
   constructor(props){
     super(props);
     this.max_content_id=3;
     this.state={
-      mode:"read",
+      mode:"welcome",
       selected_content_id:2,
       subject:{title:'WEB', sub: 'world wide web!'},
       welcome:{title:'Welcome', desc:'Hello, React!!'},
@@ -50,24 +50,34 @@ class App extends Component {
         this.max_content_id=this.max_content_id+1;
       //  this.state.contents.push(
       //    {id:this.max_content_id, title:_title,desc:_desc})
-        var _contents=this.state.contents.concat(
-          {id:this.max_content_id, title:_title, desc:_desc})
-          
+      //  var _contents=this.state.contents.concat(
+      //   {id:this.max_content_id, title:_title, desc:_desc})
+        var _contents=Array.from(this.state.contents);
+        _contents.push({id:this.max_content_id, title:_title, desc:_desc});
         this.setState({
-          contents:_contents
+          contents:_contents,
+          mode:'read',
+          selected_content_id:this.max_content_id
         });
         }.bind(this)} />
     
     }else if(this.state.mode==='update'){
       _content=this.getReadContent();
-      _article=<UpdateContent data={_content} onSubmit={function(_title, _desc){
-        this.max_content_id=this.max_content_id+1;
-        var _contents=this.state.contents.concat(
-          {id:this.max_content_id, title:_title, desc:_desc})
-          
-        this.setState({
-          contents:_contents
-        });
+      _article=<UpdateContent data={_content} onSubmit={
+        function(_id,_title, _desc){
+          var _contents=Array.from(this.state.contents);
+          var i=0;
+          while(i<_contents.length){
+            if(_contents[i].id === _id){
+              _contents[i]={id:_id, title:_title, desc:_desc};
+              break;
+            }
+            i=i+1;
+          }  
+          this.setState({
+            contents:_contents,
+            mode:'read'
+          });
         }.bind(this)} />
 
     }
@@ -91,7 +101,26 @@ class App extends Component {
                 selected_content_id:Number(id)})
         }.bind(this)}/>
         <Control onChangePage={function(_mode){
-          this.setState({mode:_mode})
+          if(_mode==='delete'){
+            if(window.confirm('really?')){
+              var _contents=Array.from(this.state.contents);
+              var i=0;
+              while(i<this.state.contents.length){
+                if(_contents[i].id===this.state.selected_content_id){
+                  _contents.splice(i,1);
+                  break;
+                }
+                i=i+1;
+              }
+              this.setState({
+                mode:'welcome',
+                contents:_contents
+              })
+              alert('deleted!')
+            }
+          }else{
+            this.setState({mode:_mode})
+          }
         }.bind(this)}/>
         {this.getContent()}
       </div>

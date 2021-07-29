@@ -1,9 +1,10 @@
 import React,{Component} from 'react';
 
-class UpdataContent extends Component{
+class UpdateContent extends Component{
     constructor(props){
         super(props);
         this.state={
+            id:this.props.data.id,
             title: this.props.data.title,
             desc:this.props.data.desc
         }
@@ -19,9 +20,11 @@ class UpdataContent extends Component{
                         onSubmit={function(e){
                             e.preventDefault();
                             this.props.onSubmit(
-                                e.target.title.value,
-                                e.target.desc.value);
+                                this.state.id,
+                                e.target.title,
+                                e.target.desc);
                         }.bind(this)}>
+                <input type="hidden" name="id" value={this.state.id}></input>
                     <p>
                         <input 
                             type="text" 
@@ -44,4 +47,4 @@ class UpdataContent extends Component{
     }
 }
 
-export default UpdataContent;
+export default UpdateContent;
